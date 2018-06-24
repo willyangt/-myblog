@@ -88,8 +88,13 @@ class User(BaseModel, db.Model):
                                 secondaryjoin=id == user_follow.c.follower_id,
                                 backref=db.backref("followed", lazy="dynamic"),
                                 lazy="dynamic")
-    # 自己写的文章
-    article_list = db.relationship("Article", backref="user", lazy="dynamic")
+    # 自己写的free主题的文章
+    free_article_list = db.relationship("Free_Article", backref="user", lazy="dynamic")
+    # 自己写的work主题的文章
+    work_article_list = db.relationship("Work_Article", backref="user", lazy="dynamic")
+    # 自己写的work主题的文章
+    thinking_article_list = db.relationship("Thinking_Article", backref="user", lazy="dynamic")
+
 
     #　property属性可以让方法像属性一样使用
     @property
@@ -142,43 +147,141 @@ class User(BaseModel, db.Model):
         }
         return resp_dict
 
-class Base_Article(object):
+class Base_Article(BaseModel):
     """定义文章基类"""
-    pass
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(256), nullable=False)
+    source = db.Column(db.String(64), default='个人发布')
+    digest = db.Column(db.String(512), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    clicks = db.Column(db.Integer, default=0)
+    image_url = db.Column(db.String(256))
+    user_id = db.Column(db.Integer, db.ForeignKey("tb_user.id"))
+    status = db.Column(db.Integer, default=0)   # 0代表文章待审核，1代表通过，　-1代表拒绝通过
+    reason = db.Column(db.String(256))  # 未通过原因
 
 
+    # def to_review_dict(self):
+    #     resp_dict = {
+    #         "id": self.id,
+    #         "title": self.title,
+    #         "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+    #         "status": self.status,
+    #         "reason": self.reason if self.reason else ""
+    #     }
+    #     return resp_dict
+    #
+    # def to_basic_dict(self):
+    #     resp_dict = {
+    #         "id": self.id,
+    #         "title": self.title,
+    #         "source": self.source,
+    #         "digest": self.digest,
+    #         "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+    #         "index_image_url": self.image_url,
+    #         "clicks": self.clicks,
+    #     }
+    #     return resp_dict
 
-class Free_Article(BaseModel, Base_Article, db.Model):
+    def to_dict(self):
+        resp_dict = {
+            "id": self.id,
+            "title": self.title,
+            "source": self.source,
+            "digest": self.digest,
+            "content": self.content,
+            "clicks": self.clicks,
+            "image_url": self.image_url,
+        }
+        return resp_dict
+
+class Free_Article(Base_Article, db.Model):
     """定义关于自由主题的文章模型类"""
-    pass
+    __tablename__ = "tb_free_article"
+    # 共同的字段写在父类，　三个主题的分类信息不同，所以单独写入模型子类
+    free_category_id = db.Column(db.ForeignKey("tb_free_category.id"))
+    free_comments = db.relationship("Free_Comment", lazy="dynamic")
 
-class Work_Article(BaseModel, Base_Article, db.Model):
+    def to_dict(self):
+        base_resp_dict = super().to_dict()
+        resp_dict = {
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "free_comments_count": self.free_comments.count(),
+            "free_category": self.free_category.to_dict(),
+            "author": self.user.to_dict() if self.user else None
+        }
+        #　将父类继承来的字典和子类自己实现的字典合并返回
+        resp_dict = {**base_resp_dict, **resp_dict}
+        return resp_dict
+
+
+class Work_Article(Base_Article, db.Model):
     """定义关于拼搏主题的文章模型类"""
-    pass
+    __tablename__ = "tb_work_article"
+    # 共同的字段写在父类，　三个主题的分类信息不同，所以单独写入模型子类
+    work_category_id = db.Column(db.ForeignKey("tb_work_category.id"))
+    work_comments = db.relationship("Work_Comment", lazy="dynamic")
 
-class Thinking_Article(BaseModel, Base_Article, db.Model):
+    def to_dict(self):
+        base_resp_dict = super().to_dict()
+        resp_dict = {
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "work_comments_count": self.work_comments.count(),
+            "work_category": self.work_category.to_dict(),
+            "author": self.user.to_dict() if self.user else None
+        }
+        # 　将父类继承来的字典和子类自己实现的字典合并返回
+        resp_dict = {**base_resp_dict, **resp_dict}
+        return resp_dict
+
+class Thinking_Article(Base_Article, db.Model):
     """定义关于宁静主题的文章模型类"""
-    pass
+    __tablename__ = "tb_thinking_article"
+    # 共同的字段写在父类，　三个主题的分类信息不同，所以单独写入模型子类
+    thinking_category_id = db.Column(db.ForeignKey("tb_thinking_category.id"))
+    thinking_comments = db.relationship("Thinking_Comment", lazy="dynamic")
+
+    def to_dict(self):
+        base_resp_dict = super().to_dict()
+        resp_dict = {
+            "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
+            "thinking_comments_count": self.thinking_comments.count(),
+            "thinking_category": self.thinking_category.to_dict(),
+            "author": self.user.to_dict() if self.user else None
+        }
+        # 　将父类继承来的字典和子类自己实现的字典合并返回
+        resp_dict = {**base_resp_dict, **resp_dict}
+        return resp_dict
 
 
 
-class Base_Categories(object):
+class Base_Categories(BaseModel):
     """定义各个主题分类的基类"""
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)
+    #定义分类表基类方法
+    def to_dict(self):
+        resp_dict = {
+            "id": self.id,
+            "name": self.name
+        }
 
-class Free_Categories(BaseModel, Base_Categories, db.Model):
+class Free_Categories(Base_Categories, db.Model):
     """定义自由主题分类信息"""
-    pass
+    __tablename__ = "tb_free_category"
+    free_new_list = db.relationship("Free_Article", backref="free_category", lazy="dynamic")
 
 
-class Work_Categories(BaseModel, Base_Categories, db.Model):
+class Work_Categories(Base_Categories, db.Model):
     """定义拼搏主题分类信息"""
-    pass
+    __tablename__ = "tb_work_category"
+    work_new_list = db.relationship("Work_Article", backref="work_category", lazy="dynamic")
 
 
-class Thinking_Categories(BaseModel, Base_Categories, db.Model):
+class Thinking_Categories(Base_Categories, db.Model):
     """定义宁静主题分类信息"""
-    pass
-
+    __tablename__ = "tb_thinking_category"
+    thinking_new_list = db.relationship("Thinking_Article", backref="thinking_category", lazy="dynamic")
 
 
 class Base_Comment(object):

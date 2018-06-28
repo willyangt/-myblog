@@ -14,7 +14,8 @@ from config import config ,Config
 # from flask_login import LoginManager
 
 # login_manager = LoginManager()
-
+import pymysql
+pymysql.install_as_MySQLdb()
 
 # 实例出ｄｂ
 db = SQLAlchemy()

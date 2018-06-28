@@ -11,7 +11,7 @@ manage = Manager(app)
 Migrate(app, db)
 # 使用ｍａｎａｇｅ管理器通过迁移命令来管理数据库
 manage.add_command('db', MigrateCommand)
-
+from app import models # 一定要将模型导入关联程序
 
 
 if __name__ == '__main__':

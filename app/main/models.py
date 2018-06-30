@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.declarative import declared_attr
 
 from app import db
-from .flask_mistune_pygments import markdown
+from app.flask_mistune_pygments import markdown
 
 
 
@@ -152,7 +152,7 @@ class User(BaseModel, db.Model):
         }
         return resp_dict
 
-class Base_Article(object):
+class BaseArticle(object):
     """定义文章基类"""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(256), nullable=False)
@@ -168,27 +168,6 @@ class Base_Article(object):
     reason = db.Column(db.String(256))  # 未通过原因
 
 
-    # def to_review_dict(self):
-    #     resp_dict = {
-    #         "id": self.id,
-    #         "title": self.title,
-    #         "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
-    #         "status": self.status,
-    #         "reason": self.reason if self.reason else ""
-    #     }
-    #     return resp_dict
-    #
-    # def to_basic_dict(self):
-    #     resp_dict = {
-    #         "id": self.id,
-    #         "title": self.title,
-    #         "source": self.source,
-    #         "digest": self.digest,
-    #         "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
-    #         "index_image_url": self.image_url,
-    #         "clicks": self.clicks,
-    #     }
-    #     return resp_dict
 
     def to_dict(self):
         resp_dict = {
@@ -204,7 +183,7 @@ class Base_Article(object):
 
 # BaseModel = declarative_base()
 
-class Free_Article(BaseModel, Base_Article, db.Model):
+class FreeArticle(BaseModel, BaseArticle, db.Model):
     """定义关于自由主题的文章模型类"""
     __tablename__ = "tb_free_article"
     # 共同的字段写在父类，　三个主题的分类信息不同，所以单独写入模型子类
@@ -224,7 +203,7 @@ class Free_Article(BaseModel, Base_Article, db.Model):
         return resp_dict
 
 
-class Work_Article(BaseModel, Base_Article, db.Model):
+class WorkArticle(BaseModel, BaseArticle, db.Model):
     """定义关于拼搏主题的文章模型类"""
     __tablename__ = "tb_work_article"
     # 共同的字段写在父类，　三个主题的分类信息不同，所以单独写入模型子类
@@ -243,7 +222,7 @@ class Work_Article(BaseModel, Base_Article, db.Model):
         resp_dict = {**base_resp_dict, **resp_dict}
         return resp_dict
 
-class Thinking_Article(BaseModel, Base_Article, db.Model):
+class ThinkingArticle(BaseModel, BaseArticle, db.Model):
     """定义关于宁静主题的文章模型类"""
     __tablename__ = "tb_thinking_article"
     # 共同的字段写在父类，　三个主题的分类信息不同，所以单独写入模型子类
@@ -264,7 +243,7 @@ class Thinking_Article(BaseModel, Base_Article, db.Model):
 
 
 
-class Base_Categories(BaseModel):
+class BaseCategories(BaseModel):
     """定义各个主题分类的基类"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
@@ -275,25 +254,25 @@ class Base_Categories(BaseModel):
             "name": self.name
         }
 
-class Free_Categories(Base_Categories, db.Model):
+class FreeCategories(BaseCategories, db.Model):
     """定义自由主题分类信息"""
     __tablename__ = "tb_free_category"
     free_article_list = db.relationship("Free_Article", backref="free_category", lazy="dynamic")
 
 
-class Work_Categories(Base_Categories, db.Model):
+class WorkCategories(BaseCategories, db.Model):
     """定义拼搏主题分类信息"""
     __tablename__ = "tb_work_category"
     work_article_list = db.relationship("Work_Article", backref="work_category", lazy="dynamic")
 
 
-class Thinking_Categories(Base_Categories, db.Model):
+class ThinkingCategories(BaseCategories, db.Model):
     """定义宁静主题分类信息"""
     __tablename__ = "tb_thinking_category"
     thinking_article_list = db.relationship("Thinking_Article", backref="thinking_category", lazy="dynamic")
 
 
-class Base_Comment(object):
+class BaseComment(object):
     """定义评论基类"""
     id = db.Column(db.Integer, primary_key=True)
     @declared_attr
@@ -309,7 +288,7 @@ class Base_Comment(object):
             "like_count": self.like_count
         }
 
-class Free_Comment(BaseModel, Base_Comment, db.Model):
+class FreeComment(BaseModel, BaseComment, db.Model):
     """定义自由主题的评论模型类"""
     __tablename__ = "tb_free_comment"
     free_article_id = db.Column(db.Integer, db.ForeignKey("tb_free_article.id"), nullable=False)
@@ -326,7 +305,7 @@ class Free_Comment(BaseModel, Base_Comment, db.Model):
         resp_dict = {**base_resp_dict, **resp_dict}
         return resp_dict
 
-class Work_Comment(BaseModel, Base_Comment, db.Model):
+class WorkComment(BaseModel, BaseComment, db.Model):
     """定义拼搏主题的评论模型类"""
     __tablename__ = "tb_work_comment"
     work_article_id = db.Column(db.Integer, db.ForeignKey("tb_work_article.id"), nullable=False)
@@ -343,7 +322,7 @@ class Work_Comment(BaseModel, Base_Comment, db.Model):
         resp_dict = {**base_resp_dict, **resp_dict}
         return resp_dict
 
-class Thinking_Comment(BaseModel, Base_Comment, db.Model):
+class ThinkingComment(BaseModel, BaseComment, db.Model):
     """定义宁静主题的评论模型类"""
     __tablename__ = "tb_thinking_comment"
     thinking_article_id = db.Column(db.Integer, db.ForeignKey("tb_thinking_article.id"), nullable=False)
@@ -362,24 +341,24 @@ class Thinking_Comment(BaseModel, Base_Comment, db.Model):
 
 
 
-class Base_CommentLike(object):
+class BaseCommentLike(object):
     """定义点赞基类"""
     @declared_attr
     def user_id(cls):
         return db.Column(db.Integer, db.ForeignKey("tb_user.id"), primary_key=True)
 
-class Free_Comment_like(BaseModel, Base_CommentLike, db.Model):
+class FreeCommentLike(BaseModel, BaseCommentLike, db.Model):
     """定义自由主题点赞模型类"""
     __tablename__ = "tb_free_comment_like"
     free_comment_id = db.Column(db.Integer, db.ForeignKey("tb_free_comment.id"), primary_key=True)
 
-class Work_Comment_like(BaseModel, Base_CommentLike, db.Model):
+class WorkCommentLike(BaseModel, BaseCommentLike, db.Model):
     """定义拼搏主题点赞模型类"""
     __tablename__ = "tb_work_comment_like"
     work_comment_id = db.Column(db.Integer, db.ForeignKey("tb_work_comment.id"), primary_key=True)
 
 
-class Thinking_Comment_like(BaseModel, Base_CommentLike, db.Model):
+class ThinkingComment_Like(BaseModel, BaseCommentLike, db.Model):
     """定义宁静主题点赞模型类"""
     __tablename__ = "tb_thinking_comment_like"
     thinking_comment_id = db.Column(db.Integer, db.ForeignKey("tb_thinking_comment.id"), primary_key=True)

@@ -64,6 +64,12 @@ def create_app(config_name):
         response.set_cookie('csrf_token', csrf_token)
         return response
 
+    # 注册登陆首页模块蓝图
+    from app.main.index import index
+    app.register_blueprint(index)
+    # 注册登陆注册模块蓝图
+    from app.main.register_login import entrance
+    app.register_blueprint(entrance)
     return app
 
 

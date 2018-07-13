@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<!-- <link rel="icon" href="favicon.ico"> -->
+		<title>Huihui</title>
+		<!-- Bootstrap core CSS -->
+		<link href="../static/mcss/bootstrap.min.css" rel="stylesheet">
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> -->
+		<!-- Custom styles for this template -->
+		<!-- <link href="css/jquery.bxslider.css" rel="stylesheet"> -->
+		<link href="../static/mcss/style.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="../static/css/reset.css">
+		<link rel="stylesheet" type="text/css" href="../static/css/main.css">
+		<script type="text/javascript" src="../static/js/jquery-1.12.4.min.js"></script>
+		<script type="text/javascript" src="../static/js/main.js"></script>
+
+	</head>
+	<body>
+		<!-- Navigation -->
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div id="navbar" class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="index.html">Home</a></li>
+						<li><a href="#about">自由(Free)</a></li>
+						<li><a href="#contact">拼搏(Work)</a></li>
+						<li><a href="#contact">宁静(Thinking)</a></li>
+						<!-- <li><a href="about.html">About Me</a></li>
+						<li><a href="about.html">Contact</a></li> -->
+					</ul>
+{#					{% if data.user_info %}#}
+						<!-- 用户登录后显示下面，隐藏上面 -->
+						<div class="nav navbar-nav navbar-right" "user_login fr">
+							<li><a href="javascript:;" class="register_btn"><i class="fa"></i>
+							<img src="{{ data.user_info.avatar_url }}" class="lgin_pic"></a></li>
+							<li><a href="/user/info"><i class="fa"></i>{{ data.user_info.nick_name }}</a></li>
+							<li><a href="javascript:;" onclick="logout()"><i class="fa"></i>退出</a></li>
+						</div>
+{#					{% else %}#}
+					<ul class="nav navbar-nav navbar-right" "user_btns fr">
+							<li><a href="javascript:;" class="login_btn"><i class="fa"></i>Login登陆</a></li>
+							<li><a href="javascript:;" class="register_btn"><i class="fa"></i>Register注册</a></li>
+					</ul>
+{#					{% endif %}#}
+	
+				</div>
+				<!--/.nav-collapse -->
+			</div>
+		</nav>
+
+		<div class="container">
+		<header>
+			<a href="index.html"><img src="../static/mimages/logo.png"></a>
+			<p> ————————————一个有情怀的程序员</p>
+		</header>
+		<section class="main-slider">
+			<ul class="bxslider">
+				<li><div class="slider-item"><a href="#"><img src="../static/mimages/1140x500-2.jpg" title="Funky roots" />hello</a></div></li>
+				<li><div class="slider-item"><a href="#"><img src="../static/mimages/1140x500-1.jpg" title="Funky roots" />hello1</a></div></li>
+				<li><div class="slider-item"><a href="#"><img src="../static/mimages/1140x500-3.jpg" title="Funky roots" />hello2</a></div></li>
+			</ul>
+		</section>
+		</div><!-- /.container -->	
+		<div class="mycon">
+			<h2><a href="post.html" title="Vintage-Inspired Finds for Your Home">Something For Myself</a></h2>
+		</div>
+		<footer class="footer">
+
+			<div class="footer-socials">
+				<a href="#"><i class="fa fa-facebook"></i></a>
+				<a href="#"><i class="fa fa-twitter"></i></a>
+				<a href="#"><i class="fa fa-instagram"></i></a>
+				<a href="#"><i class="fa fa-google-plus"></i></a>
+				<a href="#"><i class="fa fa-dribbble"></i></a>
+				<a href="#"><i class="fa fa-reddit"></i></a>
+			</div>
+
+			<div class="footer-bottom">
+				<i class="fa fa-copyright"></i> Writed Start At 2018.5.24--End in <br>
+				Best Wishes For Everyone! <a href="http://www.cssmoban.com/" target="_blank" title="Title">自定义</a> 
+			</div>
+		 <!-- 登录表单 -->
+		 <form class="login_form_con">
+				<div class="login_form">
+					<div class="login_title">
+						<h3>登 录</h3>
+						<a href="javascript:;" class="shutoff"></a>
+					</div>
+					<div class="form_group">
+						<input id="mobile" type="text" name="mobile" autocomplete="off">
+						<div class="input_tip">手机号</div>
+						<div id="login-mobile-err" class="error_tip">手机号不能为空</div>
+					</div>
+					<div class="form_group">
+						<input id="password" type="password" name="password">
+						<div class="input_tip">密码(不少于6位)</div>
+						<div id="login-password-err" class="error_tip">密码不能为空</div>
+					</div>
+					<input type="submit" name="" value="登 录" class="input_sub">
+					<div class="down_link">还没有账号？<a href="javascript:;" class="to_register">立即注册</a></div>
+				</div>
+				<div class="mask"></div>
+		</form>
+		
+		<!-- 注册表单 -->
+		<form class="register_form_con">
+			<div class="register_form">
+				<div class="register_title">
+					<h3>注 册</h3>
+					<a href="javascript:;" class="shutoff"></a>
+				</div>
+				<div class="form_group">
+					<input type="text" name="mobile" autocomplete="off" id="register_mobile" class="phone_input">
+					<div class="input_tip">手机号</div>
+					<div id="register-mobile-err" class="error_tip">手机号不能为空</div>
+				</div>
+				<div class="form_group">
+					<input type="text" name="code_pwd" id="imagecode" class="code_pwd">
+					<div class="input_tip">图形验证码</div>
+					<img src="../static/news/images/pic_code.png" class="get_pic_code" onclick="generateImageCode()">
+					<div id="register-image-code-err" class="error_tip">图形码不能为空</div>
+				</div>
+				<div class="form_group">
+					<input type="text" name="smscode" id="smscode" class="code_pwd">
+					<div class="input_tip">手机验证码</div>
+					<a href="javascript:;" class="get_code" onclick="sendSMSCode()">点击获取验证码</a>
+					<div id="register-sms-code-err" class="error_tip">验证码不能为空</div>
+				</div>
+				<div class="form_group">
+					<input type="password" name="password" id="register_password" class="pass_input">
+					<div class="input_tip">密码(不少于6位)</div>
+					<div id="register-password-err" class="error_tip">密码不能为空</div>
+				</div>
+				<div  class="form_group2 clearfix">
+					<input type="checkbox" class="agree_input" checked>
+					<p>同意使用条款，并已阅读"跟帖评论自律管理承诺书"</p>
+					<div class="error_tip">请勾选</div>
+				</div>
+				<input type="submit" name="" value="注 册" class="input_sub">
+				<div class="down_link">已有账号？<a href="javascript:;" class="to_login">立即登录</a></div>
+			</div>
+			<div class="mask"></div>
+		</form>
+		</footer>
+
+		<!-- Bootstrap core JavaScript
+			================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<!-- <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script> -->
+		<!-- <script src="js/jquery-1.12.4.min.js"></script> -->
+		<script src="../static/mjs/bootstrap.min.js"></script>
+		<script src="../static/mjs/jquery.bxslider.js"></script>
+		<script src="../static/mjs/mooz.scripts.min.js"></script>
+	</body>
+</html>
